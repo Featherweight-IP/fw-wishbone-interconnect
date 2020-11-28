@@ -79,7 +79,7 @@ module wb_interconnect_NxN #(
 			for (md_t_i=0; md_t_i<N_TARGETS; md_t_i=md_t_i+1) begin : block_md_t_i
 				assign target_initiator_sel[N_TARGETS-md_t_i-1][md_i] = 
 					((adr[WB_ADDR_WIDTH*md_i+:WB_ADDR_WIDTH]&I_ADR_MASK[WB_ADDR_WIDTH*md_i+:WB_ADDR_WIDTH])
-						== T_ADR[WB_ADDR_WIDTH*md_t_i+:WB_ADDR_WIDTH]);
+						== T_ADR[WB_ADDR_WIDTH*md_t_i+:WB_ADDR_WIDTH]) && (cyc[md_i] && stb[md_i]);
 				assign initiator_target_sel[md_i][md_t_i] = target_initiator_sel[md_t_i][md_i];
 			end
 		end
