@@ -22,13 +22,31 @@ module wb_interconnect_NxN #(
 			{ 32'h2800_0000 }
 		}
 		) (
-		input										clk,
-		input										rst,
+		input										clock,
+		input										reset,
+		
 		// Target ports into the interconnect
-		`WB_TARGET_PORT_ARR(,WB_ADDR_WIDTH,WB_DATA_WIDTH,N_INITIATORS),
-	
+		input[(N_INITIATORS*WB_ADDR_WIDTH)-1:0]			adr, 
+		input[(N_INITIATORS*WB_DATA_WIDTH)-1:0]			dat_w, 
+		output reg[(N_INITIATORS*WB_DATA_WIDTH)-1:0]	dat_r, 
+		input[N_INITIATORS-1:0]							cyc, 
+		output[N_INITIATORS-1:0]						err, 
+		input[N_INITIATORS*(WB_DATA_WIDTH/8)-1:0]		sel, 
+		input[N_INITIATORS-1:0]							stb, 
+		output reg[N_INITIATORS-1:0]					ack, 
+		input[N_INITIATORS-1:0]							we,
+		
+		
 		// Initiator ports out of the interconnect
-		`WB_INITIATOR_PORT_ARR(t,WB_ADDR_WIDTH,WB_DATA_WIDTH,N_TARGETS)
+		output reg[(N_TARGETS*WB_ADDR_WIDTH)-1:0]	tadr,
+		output reg[(N_TARGETS*WB_DATA_WIDTH)-1:0]	tdat_w,
+		input[(N_TARGETS*WB_DATA_WIDTH)-1:0]		tdat_r,
+		output[N_TARGETS-1:0]						tcyc,
+		input[N_TARGETS-1:0]						terr,
+		output reg[N_TARGETS*(WB_DATA_WIDTH/8)-1:0]	tsel,
+		output[N_TARGETS-1:0]						tstb,
+		input[N_TARGETS-1:0]						tack,
+		output[N_TARGETS-1:0]						twe
 		);
 	
 	localparam WB_DATA_MSB = (WB_DATA_WIDTH-1);
@@ -37,32 +55,6 @@ module wb_interconnect_NxN #(
 	localparam NO_TARGET  = {(N_TARG_ID_BITS+1){1'b1}};
 	localparam NO_INITIATOR = {(N_INIT_ID_BITS+1){1'b1}};
 	
-	// Interface to the decode-fail target
-//	wb_if				terr();
-
-//	function [N_TARG_ID_BITS:0] addr2targ_id(
-//		input reg[N_INIT_ID_BITS-1:0]		initiator,
-//		input reg[WB_ADDR_WIDTH-1:0] 		addr
-//		);
-//		integer i;
-//		begin
-//		addr2targ_id = N_TARGETS;
-////		$display("addr2targ_id: 'h%08h 'h%08h", addr, ADDR_RANGES);
-//		for (i=0; i<N_TARGETS; i+=1) begin
-////			$display("Address Range: %0d 'h%08h..'h%08h", i, 
-////					ADDR_RANGES[(WB_ADDR_WIDTH*(i+2)-1)-:WB_ADDR_WIDTH],
-////					ADDR_RANGES[(WB_ADDR_WIDTH*(i+1)-1)-:WB_ADDR_WIDTH]);
-////			$display("  %0d %0d", (WB_ADDR_WIDTH*(i+2)-1), (WB_ADDR_WIDTH*(i+1)-1));
-//			if (
-//					(addr&I_ADR_MASK[(WB_ADDR_WIDTH*(i+1))-1-:WB_ADDR_WIDTH]) == 
-//					(T_ADR[(WB_ADDR_WIDTH*(i+1))-1-:WB_ADDR_WIDTH])) begin
-//				$display("Address 'h%08h: range=%0d", addr, N_TARGETS-1);
-//				addr2targ_id = N_TARGETS-1;
-//			end
-//		end
-//		end
-//	endfunction
-
 	// Each initiator has a request vector -> Which target is desired
 	//
 	// Each target has an arbiter -> Which initiator has access
@@ -93,56 +85,8 @@ module wb_interconnect_NxN #(
 		end
 	endgenerate
 
-//	// Initiator state machine
-//	reg[2:0]							initiator_state[N_INITIATORS-1:0];
-	
-	
 	// Per-target grant vector
 	wire[N_INITIATORS-1:0]				initiator_gnt[N_TARGETS-1:0];
-//	wire[$clog2(N_INITIATORS)-1:0]		initiator_gnt_id[N_TARGETS:0];
-//	wire[N_INITIATORS-1:0]				initiator_target_req[N_TARGETS:0];
-//	
-//	generate
-//		genvar m_i;
-//		for (m_i=0; m_i<N_INITIATORS; m_i=m_i+1) begin : block_m_i
-//			always @(posedge clk) begin
-//				if (rst == 1) begin
-//					initiator_state[m_i] <= 0;
-//					initiator_active_target[m_i] <= NO_TARGET;
-//				end else begin
-//					case (initiator_state[m_i])
-//						0: begin
-//							if (cyc[m_i] && stb[m_i]) begin
-//								initiator_state[m_i] <= 1;
-//								initiator_active_target[m_i] <= initiator_target_sel[N_TARGETS*m_i+:N_TARGETS];
-////								$display("Master %0d => Slave %0d", m_i, addr2targ_id(m_i, adr[m_i]));
-//							end
-//						end
-//						
-//						1: begin
-//							// Wait for the addressed target to acknowledge
-//							if (cyc[m_i] && stb[m_i] && ack[m_i]) begin
-//								initiator_state[m_i] <= 0;
-//								initiator_active_target[N_TARGETS*m_i+:N_TARGETS] <= {N_TARGETS{1'b0}};
-//							end
-//						end
-//					endcase
-//				end
-//			end
-//		end
-//	endgenerate
-
-//	// Build the req vector for each target
-//	// This vector aggregates requests from each initiator for a given target
-//	generate
-//		genvar m_req_i, m_req_j;
-//
-//		for (m_req_i=0; m_req_i <(N_TARGETS+1); m_req_i=m_req_i+1) begin : block_m_req_i
-//			for (m_req_j=0; m_req_j < N_INITIATORS; m_req_j=m_req_j+1) begin : block_m_req_j
-//				assign initiator_target_req[m_req_i][m_req_j] = (initiator_active_target[m_req_j] == m_req_i);
-//			end
-//		end
-//	endgenerate
 
 	generate
 		genvar t_arb_i;
@@ -152,8 +96,8 @@ module wb_interconnect_NxN #(
 				.N_REQ  (N_INITIATORS)
 				) 
 				aw_arb (
-					.clk    (clk   ), 
-					.rst    (rst  ), 
+					.clock    (clock   ), 
+					.reset    (reset  ), 
 					// Request vector
 					.req    (target_initiator_sel[t_arb_i]),
 					// One-hot grant vector
@@ -219,49 +163,68 @@ module wb_interconnect_NxN #(
 	
 	// WB signals from target back to initiator
 	generate
-		genvar t2i_i;
+		genvar t2i_i, t2i_j;
+		integer t2i_ii;
+			
 		
 		for (t2i_i=0; t2i_i<N_INITIATORS; t2i_i=t2i_i+1) begin : block_t2i_i
-			assign dat_r[WB_DATA_WIDTH*t2i_i+:WB_DATA_WIDTH] = 
-				(initiator_active_target[t2i_i] != NO_TARGET)?
-					tdat_r[WB_DATA_WIDTH*initiator_active_target[t2i_i]+:WB_DATA_WIDTH]:
-						{WB_DATA_WIDTH{1'b0}};
+			always @* begin
+				dat_r[WB_DATA_WIDTH*t2i_i+:WB_DATA_WIDTH] = {WB_DATA_WIDTH{1'b0}};
+				ack[t2i_i] = 1'b0;
+				for (t2i_ii=0; t2i_ii<N_TARGETS; t2i_ii=t2i_ii+1) begin
+					if (initiator_active_target[t2i_i] == t2i_ii) begin
+						dat_r[WB_DATA_WIDTH*t2i_i+:WB_DATA_WIDTH] = 
+							tdat_r[WB_DATA_WIDTH*t2i_ii+:WB_DATA_WIDTH];
+						ack[t2i_i] = tack[t2i_ii];
+					end
+				end
+			end
 			assign err[t2i_i] = (initiator_active_target[t2i_i] != NO_TARGET)?
 					terr[initiator_active_target[t2i_i]]:1'b0;
-			assign ack[t2i_i] = (initiator_active_target[t2i_i] != NO_TARGET)?
-					tack[initiator_active_target[t2i_i]]:1'b0;
-//			assign dat_r[WB_DATA_WIDTH*t2i_i+:WB_DATA_WIDTH] = 
-//				(initiator_active_target[t2i_i] != NO_TARGET && 
-//						initiator_gnt[initiator_active_target[t2i_i]] && 
-//						initiator_gnt_id[initiator_active_target[t2i_i]] == t2i_i)?
-//					tdat_r[WB_DATA_WIDTH*initiator_active_target[t2i_i]+:WB_DATA_WIDTH]:0;
-//			assign err[t2i_i] = (initiator_active_target[t2i_i] != NO_TARGET && 
-//										initiator_gnt[initiator_active_target[t2i_i]] && 
-//										initiator_gnt_id[initiator_active_target[t2i_i]] == t2i_i)?
-//										terr[initiator_active_target[t2i_i]]:0;
-//			assign ack[t2i_i] = (initiator_active_target[t2i_i] != NO_TARGET && 
-//										initiator_gnt[initiator_active_target[t2i_i]] && 
-//										initiator_gnt_id[initiator_active_target[t2i_i]] == t2i_i)?
-//										tack[initiator_active_target[t2i_i]]:0;
 		end
 	endgenerate
 
 	// Initiator to target mux
 	generate
 		genvar i2t_mux_i;
-		for(i2t_mux_i=0; i2t_mux_i<N_TARGETS; i2t_mux_i=i2t_mux_i+1) begin : i2t_mux
+		integer i2t_mux_ii;
+		for (i2t_mux_i=0; i2t_mux_i<N_TARGETS; i2t_mux_i=i2t_mux_i+1) begin : i2t_mux
+			always @* begin
+				tadr[WB_ADDR_WIDTH*i2t_mux_i+:WB_ADDR_WIDTH] = {WB_ADDR_WIDTH{1'b0}};
+				tdat_w[WB_DATA_WIDTH*i2t_mux_i+:WB_DATA_WIDTH] = {WB_DATA_WIDTH{1'b0}};
+				tsel[(WB_DATA_WIDTH/8)*i2t_mux_i+:(WB_DATA_WIDTH/8)] = {(WB_DATA_WIDTH/8){1'b0}};
+				for (i2t_mux_ii=0; i2t_mux_ii<N_INITIATORS; i2t_mux_ii=i2t_mux_ii+1) begin
+					if (target_active_initiator[i2t_mux_i] == i2t_mux_ii) begin
+						tadr[WB_ADDR_WIDTH*i2t_mux_i+:WB_ADDR_WIDTH] = 
+							adr[WB_ADDR_WIDTH*i2t_mux_ii+:WB_ADDR_WIDTH];
+						tdat_w[WB_DATA_WIDTH*i2t_mux_i+:WB_DATA_WIDTH] = 
+							dat_w[WB_DATA_WIDTH*i2t_mux_ii+:WB_DATA_WIDTH];
+						tsel[(WB_DATA_WIDTH/8)*i2t_mux_i+:(WB_DATA_WIDTH/8)] = 
+							sel[(WB_DATA_WIDTH/8)*i2t_mux_ii+:(WB_DATA_WIDTH/8)];
+					end
+				end
+			end
+				/*
+			assign tadr[WB_ADDR_WIDTH*i2t_mux_i+:WB_ADDR_WIDTH] = 
+				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?{WB_ADDR_WIDTH{1'b0}}:
+					adr[{target_active_initiator[i2t_mux_i], 2'b00}+:WB_ADDR_WIDTH];
 			assign tadr[WB_ADDR_WIDTH*i2t_mux_i+:WB_ADDR_WIDTH] = 
 				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?{WB_ADDR_WIDTH{1'b0}}:
 					adr[WB_ADDR_WIDTH*target_active_initiator[i2t_mux_i]+:WB_ADDR_WIDTH];
+				 */
+				/*
 			assign tdat_w[WB_DATA_WIDTH*i2t_mux_i+:WB_DATA_WIDTH] = 
 				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?{WB_DATA_WIDTH{1'b0}}:
 					dat_w[WB_DATA_WIDTH*target_active_initiator[i2t_mux_i]+:WB_DATA_WIDTH];
+				 */
 			assign tcyc[i2t_mux_i] = 
 				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?1'b0:
 					cyc[target_active_initiator[i2t_mux_i]];
+				/*
 			assign tsel[(WB_DATA_WIDTH/8)*i2t_mux_i+:(WB_DATA_WIDTH/8)] = 
 				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?{(WB_DATA_WIDTH/8){1'b0}}:
 				sel[(WB_DATA_WIDTH/8)*target_active_initiator[i2t_mux_i]+:(WB_DATA_WIDTH/8)];
+			 */
 			assign tstb[i2t_mux_i] = 
 				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?1'b0:
 					stb[target_active_initiator[i2t_mux_i]];
@@ -273,8 +236,8 @@ module wb_interconnect_NxN #(
 	
 //	// Error target
 //	reg err_req;
-//	always @(posedge clk) begin
-//		if (rst == 1) begin
+//	always @(posedge clock) begin
+//		if (reset == 1) begin
 //			err_req <= 0;
 //		end else begin
 //			if (tstb[N_TARGETS] && tcyc[N_TARGETS] && !err_req) begin

@@ -12,8 +12,8 @@
 module wb_interconnect_arb #(
 		parameter 					N_REQ=2
 		) (
-		input						clk,
-		input						rst,
+		input						clock,
+		input						reset,
 		input[N_REQ-1:0]			req,
 		output[N_REQ-1:0]			gnt
 		);
@@ -36,7 +36,7 @@ module wb_interconnect_arb #(
 	generate
 		genvar gnt_ppc_i;
 	
-		// The gnt_ppc vector has 0 bits leading up to the first request
+		// The gnt_ppc vector has 0 bits leading up to the fireset request
 		for (gnt_ppc_i=N_REQ-1; gnt_ppc_i>=0; gnt_ppc_i=gnt_ppc_i-1) begin : block_gnt_ppc_i
 			if (|gnt_ppc_i) begin
 				assign gnt_ppc[gnt_ppc_i] = |last_gnt[gnt_ppc_i-1:0];
@@ -75,7 +75,7 @@ module wb_interconnect_arb #(
 	generate
 		genvar masked_gnt_i;
 	
-		// The masked_gnt vector selects the first active request
+		// The masked_gnt vector selects the fireset active request
 		// above the last grant
 		for (masked_gnt_i=0; masked_gnt_i<N_REQ; masked_gnt_i=masked_gnt_i+1) begin : block_masked_gnt_i
 			if (|masked_gnt_i) begin
@@ -90,7 +90,7 @@ module wb_interconnect_arb #(
 			//			if (masked_gnt_i == 0) begin
 			//				assign masked_gnt[masked_gnt_i] = (gnt_ppc_next[masked_gnt_i] & req[masked_gnt_i]);
 			//			end else begin
-			//				// Select first request above the last grant
+			//				// Select fireset request above the last grant
 			//				assign masked_gnt[masked_gnt_i] = (gnt_ppc_next[masked_gnt_i] & req[masked_gnt_i] & 
 			//						~(|(gnt_ppc_next[masked_gnt_i-1:0] & req[masked_gnt_i-1:0])));
 			//			end
@@ -103,8 +103,8 @@ module wb_interconnect_arb #(
 	assign prioritized_gnt = (|masked_gnt)?masked_gnt:unmasked_gnt;
 	assign gnt = prioritized_gnt;
 	
-	always @(posedge clk) begin
-		if (rst == 1) begin
+	always @(posedge clock) begin
+		if (reset == 1) begin
 			state <= 0;
 			last_gnt <= 0;
 		end else begin

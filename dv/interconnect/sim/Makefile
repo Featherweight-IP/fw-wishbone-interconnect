@@ -1,9 +1,11 @@
 SIM_DIR := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 DV_DIR := $(abspath $(SIM_DIR)/../..)
-RTL_DIR:=$(abspath $(DV_DIR)/../rtl)
+RTL_DIR:=$(abspath $(DV_DIR)/../verilog/rtl)
+GL_DIR:=$(abspath $(DV_DIR)/../verilog/gl)
 PACKAGES_DIR:=$(abspath $(DV_DIR)/../packages)
 TIMEOUT=1ms
 SIM?=vlsim
+SIMTYPE?=functional
 
 #********************************************************************
 #* Source setup
@@ -11,8 +13,12 @@ SIM?=vlsim
 INCDIRS += $(PACKAGES_DIR)/fwprotocol-defs/src/sv
 
 PYBFMS_MODULES += wishbone_bfms
-SRCS += $(RTL_DIR)/wb_interconnect_NxN.v
-SRCS += $(RTL_DIR)/wb_interconnect_arb.v
+ifeq (gate,$(SIMTYPE))
+  SRCS += $(GL_DIR)/wb_interconnect_2x4.v
+else
+  SRCS += $(RTL_DIR)/wb_interconnect_NxN.v
+  SRCS += $(RTL_DIR)/wb_interconnect_arb.v
+endif
 SRCS += $(SIM_DIR)/sv/wb_interconnect_tb.sv
 
 TOP_MODULE = wb_interconnect_tb

@@ -59,21 +59,22 @@ async def single_access(top):
     for init in range(2):
         for targ in range(4):
             for cnt in range(100):
-                adr = (0x10000000*(targ+1))+0x100*init+4*cnt
+                adr = (0x10000000*(targ+1))+(0x200*init)+(4*cnt)
                 exp = (0x1000*init+0x100*targ)+cnt
-                print("=> Write[" + hex(adr) + "] : init=" + str(init) + " targ=" + str(targ) + " cnt=" + str(cnt))
+                print("=> Write[" + hex(adr) + "] : init=" + str(init) + " targ=" + str(targ) + " cnt=" + str(cnt) + " adr=" + hex(adr) + " exp=" + hex(exp))
                 await u_i0.write(adr, exp, 0xF)
                 print("<= Write[" + hex(adr) + "] : init=" + str(init) + " targ=" + str(targ) + " cnt=" + str(cnt))
                 
     for init in range(2):
         for targ in range(4):
             for cnt in range(100):
-                adr = (0x10000000*(targ+1))+0x100*init+4*cnt
+                adr = (0x10000000*(targ+1))+0x200*init+4*cnt
                 data = await u_i0.read(adr)
                 exp = (0x1000*init+0x100*targ)+cnt
                 if data == exp:
-                    print("PASS: init=" + str(init) + " targ=" + str(targ) + " cnt=" + str(cnt))
+                    print("PASS: init=" + str(init) + " targ=" + str(targ) + " cnt=" + str(cnt) + " exp=" + hex(exp))
                 else:
-                    print("FAIL: init=" + str(init) + " targ=" + str(targ) + " cnt=" + str(cnt))
+                    print("FAIL: init=" + str(init) + " targ=" + str(targ) + 
+                          " cnt=" + str(cnt) + " exp=" + hex(exp) + " data=" + hex(data))
         
     pass

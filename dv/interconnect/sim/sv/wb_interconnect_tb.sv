@@ -97,8 +97,8 @@ module wb_interconnect_tb(input clk);
 			{32'h4000_0000}
 			})
 		) wb_interconnect_NxN (
-			.clk        (clock           ), 
-			.rst        (reset           ), 
+			.clock        (clock           ), 
+			.reset        (reset           ), 
 			`WB_CONNECT(,i2ic_),
 			`WB_CONNECT(t,ic2t_));
 	
