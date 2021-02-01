@@ -184,7 +184,9 @@ module wb_interconnect_NxN #(
 					if (initiator_active_target[t2i_i] == t2i_ii) begin
 						dat_r[WB_DATA_WIDTH*t2i_i+:WB_DATA_WIDTH] = 
 							tdat_r[WB_DATA_WIDTH*t2i_ii+:WB_DATA_WIDTH];
-						ack[t2i_i] = tack[t2i_ii];
+						// initiator_gnt indicates which initiator the
+						// target is currently granted to (one-hot)
+						ack[t2i_i] = (initiator_gnt[t2i_ii][t2i_i] && tack[t2i_ii]);
 					end
 				end
 			end
