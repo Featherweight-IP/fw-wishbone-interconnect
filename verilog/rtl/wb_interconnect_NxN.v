@@ -15,10 +15,10 @@ module wb_interconnect_NxN #(
 		parameter 									WB_DATA_WIDTH=32,
 		parameter 									N_INITIATORS=1,
 		parameter 									N_TARGETS=1,
-		parameter [N_INITIATORS*WB_ADDR_WIDTH-1:0] 	I_ADR_MASK = {
+		parameter [N_TARGETS*WB_ADDR_WIDTH-1:0] 	T_ADR_MASK = {
 			{8'hFF, {24{1'b0}} }
 		},
-		parameter [N_TARGETS*WB_ADDR_WIDTH-1:0] 		T_ADR = {
+		parameter [N_TARGETS*WB_ADDR_WIDTH-1:0] 	T_ADR = {
 			{ 32'h2800_0000 }
 		}
 		) (
@@ -62,6 +62,15 @@ module wb_interconnect_NxN #(
 	// When the two match, the initiator and target are connected
 	//
 	//
+
+	integer ii;
+	initial begin
+		for (ii=0; ii<N_TARGETS; ii=ii+1) begin
+			$display("%0d MASK='h%08h ADDR='h%08h", ii, 
+					T_ADR_MASK[WB_ADDR_WIDTH*ii+:WB_ADDR_WIDTH],
+					T_ADR[WB_ADDR_WIDTH*ii+:WB_ADDR_WIDTH]);
+		end
+	end
 	
 	// Decode logic
 	// This vector contains an element for each initiator and target,
@@ -78,7 +87,7 @@ module wb_interconnect_NxN #(
 		for (md_i=0; md_i<N_INITIATORS; md_i=md_i+1) begin : block_md_i
 			for (md_t_i=0; md_t_i<N_TARGETS; md_t_i=md_t_i+1) begin : block_md_t_i
 				assign target_initiator_sel[N_TARGETS-md_t_i-1][md_i] = 
-					((adr[WB_ADDR_WIDTH*md_i+:WB_ADDR_WIDTH]&I_ADR_MASK[WB_ADDR_WIDTH*md_i+:WB_ADDR_WIDTH])
+					((adr[WB_ADDR_WIDTH*md_i+:WB_ADDR_WIDTH]&T_ADR_MASK[WB_ADDR_WIDTH*md_t_i+:WB_ADDR_WIDTH])
 						== T_ADR[WB_ADDR_WIDTH*md_t_i+:WB_ADDR_WIDTH]) && (cyc[md_i] && stb[md_i]);
 				assign initiator_target_sel[md_i][md_t_i] = target_initiator_sel[md_t_i][md_i];
 			end
