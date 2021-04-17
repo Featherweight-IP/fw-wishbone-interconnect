@@ -63,6 +63,7 @@ module wb_interconnect_NxN #(
 	//
 	//
 
+	// synopsys translate_off
 	integer ii;
 	initial begin
 		for (ii=0; ii<N_TARGETS; ii=ii+1) begin
@@ -71,6 +72,7 @@ module wb_interconnect_NxN #(
 					T_ADR[WB_ADDR_WIDTH*ii+:WB_ADDR_WIDTH]);
 		end
 	end
+	// synopsys translate_on
 	
 	// Decode logic
 	// This vector contains an element for each initiator and target,
