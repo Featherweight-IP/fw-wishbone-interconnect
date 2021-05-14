@@ -41,7 +41,7 @@ module wb_interconnect_tag_NxN #(
 		input[N_INITIATORS*TGD_WIDTH-1:0]			tgd_w,
 		output reg[N_INITIATORS*TGD_WIDTH-1:0]		tgd_r,
 		input[N_INITIATORS*TGA_WIDTH-1:0]			tga,
-		input[N_INITIATORS*TGA_WIDTH-1:0]			tgc,
+		input[N_INITIATORS*TGC_WIDTH-1:0]			tgc,
 		
 		
 		// Initiator ports out of the interconnect
@@ -54,10 +54,10 @@ module wb_interconnect_tag_NxN #(
 		output[N_TARGETS-1:0]						tstb,
 		input[N_TARGETS-1:0]						tack,
 		output[N_TARGETS-1:0]						twe,
-		output reg[N_INITIATORS*TGD_WIDTH-1:0]		ttgd_w,
-		input[N_INITIATORS*TGD_WIDTH-1:0]			ttgd_r,
-		output reg[N_INITIATORS*TGA_WIDTH-1:0]		ttga,
-		output reg[N_INITIATORS*TGA_WIDTH-1:0]		ttgc
+		output reg[N_TARGETS*TGD_WIDTH-1:0]		ttgd_w,
+		input[N_TARGETS*TGD_WIDTH-1:0]			ttgd_r,
+		output reg[N_TARGETS*TGA_WIDTH-1:0]		ttga,
+		output reg[N_TARGETS*TGC_WIDTH-1:0]		ttgc
 		);
 	
 	localparam WB_DATA_MSB = (DAT_WIDTH-1);
@@ -123,7 +123,10 @@ module wb_interconnect_tag_NxN #(
 					// Request vector
 					.req    (target_initiator_sel[t_arb_i]),
 					// One-hot grant vector
-					.gnt    (initiator_gnt[t_arb_i])
+					.gnt    (initiator_gnt[t_arb_i]),
+					// signals the end of a transfer
+					.ack	(tack[t_arb_i])
+					
 				);
 		end
 	endgenerate
@@ -165,24 +168,6 @@ module wb_interconnect_tag_NxN #(
 		end
 	endgenerate
 			
-	
-//	reg[N_INIT_ID_BITS:0]					target_active_initiator[N_TARGETS:0];
-//	generate
-//	// For each target, determine which initiator is connected
-//		genvar t_ai_i;
-//		integer t_ai_ii;
-//		for (t_ai_i=0; t_ai_i<N_TARGETS; t_ai_i=t_am_i+1) begin : block_t_ai
-//			always @* begin
-//				target_active_initiator[t_ai_i] = NO_INITIATOR;
-//				for (t_ai_ii=0; t_ai_ii<N_INITIATORS; t_ai_ii=t_ai_ii+1) begin
-//					if (initiator_gnt[t_ai_i][t_ai_ii]) begin
-//						target_active_initiator[t_ai_i] = t_ai_ii;
-//					end
-//				end
-//			end
-//		end
-//	endgenerate	
-	
 	// WB signals from target back to initiator
 	generate
 		genvar t2i_i, t2i_j;
@@ -201,7 +186,7 @@ module wb_interconnect_tag_NxN #(
 						// initiator_gnt indicates which initiator the
 						// target is currently granted to (one-hot)
 						ack[t2i_i] = (initiator_gnt[t2i_ii][t2i_i] && tack[t2i_ii]);
-						tgd_r[TGD_WIDTH*t2i_i:+TGD_WIDTH] =
+						tgd_r[TGD_WIDTH*t2i_i+:TGD_WIDTH] =
 							ttgd_r[TGD_WIDTH*t2i_ii+:TGD_WIDTH];
 					end
 				end

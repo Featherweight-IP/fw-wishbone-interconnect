@@ -1,9 +1,7 @@
-
 /****************************************************************************
  * wb_interconnect_arb.sv
  ****************************************************************************/
 
-  
 /**
  * Module: wb_interconnect_arb
  * 
@@ -15,7 +13,8 @@ module wb_interconnect_arb #(
 		input						clock,
 		input						reset,
 		input[N_REQ-1:0]			req,
-		output[N_REQ-1:0]			gnt
+		output[N_REQ-1:0]			gnt,
+		input						ack
 		);
 	
 	reg state;
@@ -119,7 +118,7 @@ module wb_interconnect_arb #(
 				1: begin
 					// Next arbitration happens when 
 					// the currently-granted request is dropped
-					if ((gnt & req) == 0) begin
+					if (ack) begin
 						state <= 0;
 					end
 				end

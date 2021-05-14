@@ -112,7 +112,8 @@ module wb_interconnect_NxN #(
 					// Request vector
 					.req    (target_initiator_sel[t_arb_i]),
 					// One-hot grant vector
-					.gnt    (initiator_gnt[t_arb_i])
+					.gnt    (initiator_gnt[t_arb_i]),
+					.ack	(tack[t_arb_i])
 				);
 		end
 	endgenerate
