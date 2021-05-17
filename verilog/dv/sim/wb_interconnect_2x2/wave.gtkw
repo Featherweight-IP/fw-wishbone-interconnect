@@ -1,0 +1,113 @@
+[*]
+[*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
+[*] Mon Feb  1 22:44:43 2021
+[*]
+[dumpfile] "/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_2x2/rundir/simx.vcd"
+[dumpfile_mtime] "Mon Feb  1 22:33:13 2021"
+[dumpfile_size] 14538
+[savefile] "/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_2x2/wave.gtkw"
+[timestart] 480
+[size] 3440 1336
+[pos] -1216 -364
+*-4.453300 750 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] wb_interconnect_2x2_tb.
+[treeopen] wb_interconnect_2x2_tb.u_i1.
+[treeopen] wb_interconnect_2x2_tb.u_t0.
+[sst_width] 229
+[signals_width] 202
+[sst_expanded] 1
+[sst_vpaned_height] 400
+@800200
+-i0
+@28
+wb_interconnect_2x2_tb.u_i0.ack
+@22
+wb_interconnect_2x2_tb.u_i0.adr[31:0]
+@28
+wb_interconnect_2x2_tb.u_i0.clock
+wb_interconnect_2x2_tb.u_i0.cyc
+@22
+wb_interconnect_2x2_tb.u_i0.dat_r[31:0]
+wb_interconnect_2x2_tb.u_i0.dat_w[31:0]
+@28
+wb_interconnect_2x2_tb.u_i0.err
+wb_interconnect_2x2_tb.u_i0.in_reset
+wb_interconnect_2x2_tb.u_i0.reset
+@22
+wb_interconnect_2x2_tb.u_i0.sel[3:0]
+@28
+wb_interconnect_2x2_tb.u_i0.stb
+wb_interconnect_2x2_tb.u_i0.we
+@1000200
+-i0
+@800200
+-i1
+@28
+wb_interconnect_2x2_tb.u_i1.ack
+@22
+wb_interconnect_2x2_tb.u_i1.adr[31:0]
+@28
+wb_interconnect_2x2_tb.u_i1.clock
+wb_interconnect_2x2_tb.u_i1.cyc
+@22
+wb_interconnect_2x2_tb.u_i1.dat_r[31:0]
+wb_interconnect_2x2_tb.u_i1.dat_w[31:0]
+@28
+wb_interconnect_2x2_tb.u_i1.err
+wb_interconnect_2x2_tb.u_i1.in_reset
+wb_interconnect_2x2_tb.u_i1.reset
+@22
+wb_interconnect_2x2_tb.u_i1.sel[3:0]
+@28
+wb_interconnect_2x2_tb.u_i1.stb
+wb_interconnect_2x2_tb.u_i1.we
+@1000200
+-i1
+@800200
+-t0
+@28
+wb_interconnect_2x2_tb.u_t0.ack
+@22
+wb_interconnect_2x2_tb.u_t0.adr[31:0]
+@28
+wb_interconnect_2x2_tb.u_t0.clock
+wb_interconnect_2x2_tb.u_t0.cyc
+@22
+wb_interconnect_2x2_tb.u_t0.dat_r[31:0]
+wb_interconnect_2x2_tb.u_t0.dat_w[31:0]
+@28
+wb_interconnect_2x2_tb.u_t0.err
+wb_interconnect_2x2_tb.u_t0.in_reset
+wb_interconnect_2x2_tb.u_t0.reset
+@22
+wb_interconnect_2x2_tb.u_t0.sel[3:0]
+@28
+wb_interconnect_2x2_tb.u_t0.stb
+wb_interconnect_2x2_tb.u_t0.we
+@1000200
+-t0
+@800201
+-t1
+@29
+wb_interconnect_2x2_tb.u_t1.ack
+@23
+wb_interconnect_2x2_tb.u_t1.adr[31:0]
+@29
+wb_interconnect_2x2_tb.u_t1.clock
+wb_interconnect_2x2_tb.u_t1.cyc
+@23
+wb_interconnect_2x2_tb.u_t1.dat_r[31:0]
+wb_interconnect_2x2_tb.u_t1.dat_w[31:0]
+@29
+wb_interconnect_2x2_tb.u_t1.err
+wb_interconnect_2x2_tb.u_t1.in_reset
+wb_interconnect_2x2_tb.u_t1.reset
+@23
+wb_interconnect_2x2_tb.u_t1.sel[3:0]
+@29
+wb_interconnect_2x2_tb.u_t1.stb
+wb_interconnect_2x2_tb.u_t1.we
+@1000201
+-t1
+[pattern_trace] 1
+[pattern_trace] 0

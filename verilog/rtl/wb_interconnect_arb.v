@@ -111,7 +111,6 @@ module wb_interconnect_arb #(
 				0: begin
 					if (|prioritized_gnt) begin
 						state <= 1;
-						last_gnt <= prioritized_gnt;
 					end
 				end
 				
@@ -119,6 +118,7 @@ module wb_interconnect_arb #(
 					// Next arbitration happens when 
 					// the currently-granted request is dropped
 					if (ack) begin
+						last_gnt <= prioritized_gnt;
 						state <= 0;
 					end
 				end

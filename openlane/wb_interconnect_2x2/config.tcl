@@ -10,7 +10,7 @@ set ::env(CLOCK_PERIOD) "10"
 set ::env(FP_SIZING) absolute
 set ::env(DIE_AREA) "0 0 700 700"
 set ::env(PL_TARGET_DENSITY) 0.4
-set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 0
+#set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 0
 set ::env(PL_SKIP_INITIAL_PLACEMENT) 1
 
 set vlog_files ""

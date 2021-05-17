@@ -1,0 +1,7 @@
+
+tests:
+        - wb_interconnect_2x2:
+                path: wb_interconnect_2x2
+
+        - wb_interconnect_2x4:
+                path: wb_interconnect_2x4

@@ -1,0 +1,139 @@
+mkdir -p /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/cache/quartus
+make -C /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/cache/quartus -f /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/mkdv.mk \
+	MKDV_RUNDIR=/project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/rundir \
+	MKDV_CACHEDIR=/project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/cache/quartus \
+	build-quartus || (echo "FAIL: exit status $?" > status.txt; exit 1)
+make[1]: Entering directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/cache/quartus'
+make[1]: Nothing to be done for 'build-quartus'.
+make[1]: Leaving directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/cache/quartus'
+INCFILES: /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_ncsim.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_icestorm.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_vcs.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_icarus.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_cocotb.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_vlsim.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_openlane.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_questa.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_quartus.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_sby.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_pybfms.mk sby questa icestorm vlsim quartus openlane icarus questa icestorm quartus openlane cocotb pybfms
+make[1]: Entering directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/rundir'
+echo 'PROJECT_REVISION = "wb_interconnect_2x4"' > wb_interconnect_2x4.qpf
+echo "" > wb_interconnect_2x4.qsf
+echo 'set_global_assignment -name FAMILY "Cyclone V"' >> wb_interconnect_2x4.qsf
+echo "set_global_assignment -name DEVICE 5CGXFC7C7F23C8" >> wb_interconnect_2x4.qsf
+echo "set_global_assignment -name TOP_LEVEL_ENTITY wb_interconnect_2x4" >> wb_interconnect_2x4.qsf
+for def in ; do \
+	echo "set_global_assignment -name VERILOG_MACRO \"$def\"" >> wb_interconnect_2x4.qsf; \
+done
+for inc in /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/fwprotocol-defs/src/sv /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/../include; do \
+	echo "set_global_assignment -name SEARCH_PATH $inc" >> wb_interconnect_2x4.qsf; \
+done
+for src in /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4//../../verilog/rtl/wb_interconnect_NxN.v /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4//../../verilog/rtl/wb_interconnect_arb.v /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4//wb_interconnect_2x4.v; do \
+	echo "set_global_assignment -name SYSTEMVERILOG_FILE $src" >> wb_interconnect_2x4.qsf; \
+done
+quartus_map wb_interconnect_2x4 #  --source=filtref.bdf --family="Cyclone V"
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+    Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+    Info: Copyright (C) 2020  Intel Corporation. All rights reserved.
+    Info: Your use of Intel Corporation's design tools, logic functions 
+    Info: and other software and tools, and any partner logic 
+    Info: functions, and any output files from any of the foregoing 
+    Info: (including device programming or simulation files), and any 
+    Info: associated documentation or information are expressly subject 
+    Info: to the terms and conditions of the Intel Program License 
+    Info: Subscription Agreement, the Intel Quartus Prime License Agreement,
+    Info: the Intel FPGA IP License Agreement, or other applicable license
+    Info: agreement, including, without limitation, that your use is for
+    Info: the sole purpose of programming logic devices manufactured by
+    Info: Intel and sold by Intel or its authorized distributors.  Please
+    Info: refer to the applicable agreement for further details, at
+    Info: https://fpgasoftware.intel.com/eula.
+    Info: Processing started: Fri Jan  8 18:54:30 2021
+Info: Command: quartus_map wb_interconnect_2x4
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 10 of the 10 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_NxN.v
+    Info (12023): Found entity 1: wb_interconnect_NxN File: /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_NxN.v Line: 13
+Info (12021): Found 1 design units, including 1 entities, in source file /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_arb.v
+    Info (12023): Found entity 1: wb_interconnect_arb File: /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_arb.v Line: 12
+Info (12021): Found 1 design units, including 1 entities, in source file /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v
+    Info (12023): Found entity 1: wb_interconnect_2x4 File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 13
+Info (12127): Elaborating entity "wb_interconnect_2x4" for the top level hierarchy
+Info (12128): Elaborating entity "wb_interconnect_NxN" for hierarchy "wb_interconnect_NxN:u_ic" File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 45
+Warning (10230): Verilog HDL assignment warning at wb_interconnect_NxN.v(20): truncated value with size 128 to match size of target (64) File: /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_NxN.v Line: 20
+Warning (10230): Verilog HDL assignment warning at wb_interconnect_NxN.v(119): truncated value with size 32 to match size of target (2) File: /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_NxN.v Line: 119
+Warning (10230): Verilog HDL assignment warning at wb_interconnect_NxN.v(135): truncated value with size 4 to match size of target (3) File: /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_NxN.v Line: 135
+Warning (10230): Verilog HDL assignment warning at wb_interconnect_NxN.v(139): truncated value with size 32 to match size of target (3) File: /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_NxN.v Line: 139
+Info (12128): Elaborating entity "wb_interconnect_arb" for hierarchy "wb_interconnect_NxN:u_ic|wb_interconnect_arb:s_arb[0].aw_arb" File: /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/rtl/wb_interconnect_NxN.v Line: 105
+Warning (13024): Output pins are stuck at VCC or GND
+    Warning (13410): Pin "iadr[29]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[30]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[31]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[60]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[62]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[63]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[94]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[95]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[124]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[125]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Warning (13410): Pin "iadr[127]" is stuck at GND File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+Info (286030): Timing-Driven Synthesis is running
+Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
+    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
+Info (21057): Implemented 1061 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 280 input pins
+    Info (21059): Implemented 352 output pins
+    Info (21061): Implemented 429 logic cells
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 17 warnings
+    Info: Peak virtual memory: 642 megabytes
+    Info: Processing ended: Fri Jan  8 18:54:36 2021
+    Info: Elapsed time: 00:00:06
+    Info: Total CPU time (on all processors): 00:00:18
+quartus_fit wb_interconnect_2x4 # --part=EP3C10F256C8 --pack_register=minimize_area
+Info: *******************************************************************
+Info: Running Quartus Prime Fitter
+    Info: Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition
+    Info: Copyright (C) 2020  Intel Corporation. All rights reserved.
+    Info: Your use of Intel Corporation's design tools, logic functions 
+    Info: and other software and tools, and any partner logic 
+    Info: functions, and any output files from any of the foregoing 
+    Info: (including device programming or simulation files), and any 
+    Info: associated documentation or information are expressly subject 
+    Info: to the terms and conditions of the Intel Program License 
+    Info: Subscription Agreement, the Intel Quartus Prime License Agreement,
+    Info: the Intel FPGA IP License Agreement, or other applicable license
+    Info: agreement, including, without limitation, that your use is for
+    Info: the sole purpose of programming logic devices manufactured by
+    Info: Intel and sold by Intel or its authorized distributors.  Please
+    Info: refer to the applicable agreement for further details, at
+    Info: https://fpgasoftware.intel.com/eula.
+    Info: Processing started: Fri Jan  8 18:54:36 2021
+Info: Command: quartus_fit wb_interconnect_2x4
+Info: qfit2_default_script.tcl version: #1
+Info: Project  = wb_interconnect_2x4
+Info: Revision = wb_interconnect_2x4
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 10 of the 10 processors detected
+Info (119006): Selected device 5CGXFC7C7F23C8 for design "wb_interconnect_2x4"
+Info (21076): High junction temperature operating condition is not set. Assuming a default value of '85'.
+Info (21076): Low junction temperature operating condition is not set. Assuming a default value of '0'.
+Info (171003): Fitter is performing an Auto Fit compilation, which may decrease Fitter effort to reduce compilation time
+Warning (292013): Feature LogicLock is only available with a valid subscription license. You can purchase a software subscription to gain full access to this feature.
+Warning (15714): Some pins have incomplete I/O assignments. Refer to the I/O Assignment Warnings report for details
+Critical Warning (169085): No exact pin location assignment(s) for 632 pins of 632 total pins. For the list of pins please refer to the I/O Assignment Warnings table in the fitter report.
+Error (169281): There are 280 IO input pads in the design, but only 256 IO input pad locations available on the device.
+Error (169282): There are 352 IO output pads in the design, but only 256 IO output pad locations available on the device.
+Info (11798): Fitter preparation operations ending: elapsed time is 00:00:00
+Warning (169069): Following 11 pins have nothing, GND, or VCC driving datain port -- changes to this connectivity may change fitting results
+    Info (169070): Pin iadr[29] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[30] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[31] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[60] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[62] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[63] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[94] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[95] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[124] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[125] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+    Info (169070): Pin iadr[127] has GND driving its datain port File: /project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/wb_interconnect_2x4.v Line: 20
+Error (11802): Can't fit design in device. Modify your design to reduce resources, or choose a larger device. The Intel FPGA Knowledge Database contains many articles with specific details on how to resolve this error. Visit the Knowledge Database at https://www.altera.com/support/support-resources/knowledge-base/search.html and search for this specific error message number.
+Error: Quartus Prime Fitter was unsuccessful. 3 errors, 5 warnings
+    Error: Peak virtual memory: 632 megabytes
+    Error: Processing ended: Fri Jan  8 18:54:38 2021
+    Error: Elapsed time: 00:00:02
+    Error: Total CPU time (on all processors): 00:00:01
+make[1]: *** [/project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_quartus.mk:35: run-quartus] Error 3
+make[1]: Leaving directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/synth/wb_interconnect_2x4/rundir'
+make: *** [/project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/dv.mk:72: run] Error 1

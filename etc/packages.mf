@@ -1,3 +1,4 @@
 
-fwprotocol-defs@https://github.com/featherweight-ip/fwprotocol-defs.git
+fwprotocol-defs@ssh://github.com:featherweight-ip/fwprotocol-defs.git
+fw-wishbone-sram-ctrl@ssh://github.com:featherweight-ip/fw-wishbone-sram-ctrl.git
 

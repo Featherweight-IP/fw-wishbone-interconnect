@@ -1,4 +1,7 @@
 packages/
+rundir/
+cache/
+regress/
 __pycache__/
 verilog/gl/
 runs/
@@ -8,4 +11,5 @@ results.xml
 *.fst
 *.vvp
 simv.*
+*.ses
 obj_dir/

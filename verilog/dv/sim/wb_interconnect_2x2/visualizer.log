@@ -1,0 +1,24 @@
+VISUALIZERROOT = '/project/tools/questa/2020.4/visualizer/linux_x86_64/Visualizer'
+USER = 'mballance'
+# Mentor Graphics software version 2020.4
+# Copyright(C) 1999 - 2020 by Mentor Graphics All rights reserved.
+
+# visualizer -designfile cache/questa/design.bin -wavefile rundir/qwave.db
+Restoring last session...
+Opening log file /tmp/visscratch.ROoQYw/hdloffice.log
+
+14:55:35: Loading design data...
+14:55:35: Loaded  design units
+14:55:35: Loaded  design hierarchy
+
+Design Data Summary:
+  8          instances of 5     modules
+  1          instances of 1     packages
+14:55:35: Loading waveform header...
+14:55:35: Loaded  waveform header
+Adjusting saved end view time
+Window layout 'Default' saved in file: /home/mballance/.visualizer/layout.xml
+Start  : Mon 01 Feb 2021 02:55:30 PM PST
+End    : Tue 02 Feb 2021 07:25:34 AM PST
+VMSize : 926244 kB
+VMPeak : 926336 kB
