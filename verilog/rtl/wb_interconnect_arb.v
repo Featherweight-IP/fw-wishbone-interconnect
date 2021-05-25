@@ -13,7 +13,7 @@ module wb_interconnect_arb #(
 		input						clock,
 		input						reset,
 		input[N_REQ-1:0]			req,
-		output[N_REQ-1:0]			gnt,
+		output reg[N_REQ-1:0]		gnt,
 		input						ack
 		);
 	
@@ -100,16 +100,18 @@ module wb_interconnect_arb #(
 
 	// Give priority to the 'next' request
 	assign prioritized_gnt = (|masked_gnt)?masked_gnt:unmasked_gnt;
-	assign gnt = prioritized_gnt;
+//	assign gnt = prioritized_gnt;
 	
 	always @(posedge clock) begin
 		if (reset == 1) begin
 			state <= 0;
 			last_gnt <= 0;
+			gnt <= {N_REQ{1'b0}};
 		end else begin
 			case (state) 
 				0: begin
 					if (|prioritized_gnt) begin
+						gnt <= prioritized_gnt;
 						state <= 1;
 					end
 				end
@@ -119,6 +121,7 @@ module wb_interconnect_arb #(
 					// the currently-granted request is dropped
 					if (ack) begin
 						last_gnt <= prioritized_gnt;
+						gnt <= {N_REQ{1'b0}};
 						state <= 0;
 					end
 				end
