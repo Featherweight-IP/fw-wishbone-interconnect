@@ -237,6 +237,62 @@ module wb_interconnect_tag_NxN #(
 		end
 	endgenerate
 	
+	// Instance debug interface point
+	initial begin
+		$display("Note: N_INITIATORS=%0d N_TARGETS=%0d clog2(INIT)=%0d",
+				N_INITIATORS, N_TARGETS, $clog2(N_INITIATORS));
+	end
+	wire [($clog2(N_INITIATORS)*N_TARGETS)-1:0] target_initiator;
+
+	generate
+		genvar target_initiator_i;
+		for (target_initiator_i=0; target_initiator_i<N_TARGETS; target_initiator_i=target_initiator_i+1) begin : target_initiator_assign
+			assign target_initiator[target_initiator_i*$clog2(N_INITIATORS)+:$clog2(N_INITIATORS)] 
+				= target_active_initiator[target_initiator_i];
+		end
+	endgenerate
+	
+	wb_interconnect_tag_NxN_dbg #(
+		.ADR_WIDTH         (ADR_WIDTH        ), 
+		.DAT_WIDTH         (DAT_WIDTH        ), 
+		.TGC_WIDTH         (TGC_WIDTH        ), 
+		.TGA_WIDTH         (TGA_WIDTH        ), 
+		.TGD_WIDTH         (TGD_WIDTH        ), 
+		.N_INITIATORS      (N_INITIATORS     ), 
+		.N_TARGETS         (N_TARGETS        ), 
+		.T_ADR_MASK        (T_ADR_MASK       ), 
+		.T_ADR             (T_ADR            )
+		) u_dbg (
+		.clock             (clock            ), 
+		.reset             (reset            ), 
+		.i_adr             (adr             ), 
+		.i_dat_w           (dat_w           ), 
+		.i_dat_r           (dat_r           ), 
+		.i_cyc             (cyc             ), 
+		.i_err             (err             ), 
+		.i_sel             (sel             ), 
+		.i_stb             (stb             ), 
+		.i_ack             (ack             ), 
+		.i_we              (we              ), 
+		.i_tgd_w           (tgd_w           ), 
+		.i_tgd_r           (tgd_r           ), 
+		.i_tga             (tga             ), 
+		.i_tgc             (tgc             ), 
+		.t_adr             (tadr            ), 
+		.t_dat_w           (tdat_w          ), 
+		.t_dat_r           (tdat_r          ), 
+		.t_cyc             (tcyc            ), 
+		.t_err             (terr            ), 
+		.t_sel             (tsel            ), 
+		.t_stb             (tstb            ), 
+		.t_ack             (tack            ), 
+		.t_we              (twe             ), 
+		.t_tgd_w           (ttgd_w          ), 
+		.t_tgd_r           (ttgd_r          ), 
+		.t_tga             (ttga            ), 
+		.t_tgc             (ttgc            ), 
+		.target_initiator  (target_initiator ));
+	
 //	// Error target
 //	reg err_req;
 //	always @(posedge clock) begin
