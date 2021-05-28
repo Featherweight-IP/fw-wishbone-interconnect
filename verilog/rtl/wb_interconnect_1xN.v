@@ -1,7 +1,7 @@
 /****************************************************************************
- * wb_interconnect_NxN.sv
+ * wb_interconnect_1xN.v
  * 
- * Completely-combinatorial  Wishbone interconnect
+ * Completely-combinatorial single-initiator Wishbone interconnect
  ****************************************************************************/
 `include "wishbone_macros.svh"
 
@@ -11,13 +11,13 @@
  * TODO: Add module documentation
  */
 module wb_interconnect_1xN #(
-		parameter 									WB_ADDR_WIDTH=32,
-		parameter 									WB_DATA_WIDTH=32,
+		parameter 									ADR_WIDTH=32,
+		parameter 									DAT_WIDTH=32,
 		parameter 									N_TARGETS=1,
-		parameter [N_TARGETS*WB_ADDR_WIDTH-1:0] 	T_ADR_MASK = {
+		parameter [N_TARGETS*ADR_WIDTH-1:0] 	T_ADR_MASK = {
 			{8'hFF, {24{1'b0}} }
 		},
-		parameter [N_TARGETS*WB_ADDR_WIDTH-1:0] 	T_ADR = {
+		parameter [N_TARGETS*ADR_WIDTH-1:0] 	T_ADR = {
 			{ 32'h2800_0000 }
 		}
 		) (
@@ -25,36 +25,30 @@ module wb_interconnect_1xN #(
 		input										reset,
 		
 		// Target ports into the interconnect
-		input[WB_ADDR_WIDTH-1:0]					t_adr, 
-		input[WB_DATA_WIDTH-1:0]					t_dat_w, 
-		output reg[WB_DATA_WIDTH-1:0]				t_dat_r, 
+		input[ADR_WIDTH-1:0]					t_adr, 
+		input[DAT_WIDTH-1:0]					t_dat_w, 
+		output[DAT_WIDTH-1:0]				t_dat_r, 
 		input										t_cyc, 
 		output										t_err, 
-		input[(WB_DATA_WIDTH/8)-1:0]				t_sel, 
+		input[(DAT_WIDTH/8)-1:0]				t_sel, 
 		input										t_stb, 
-		output reg									t_ack, 
+		output									t_ack, 
 		input										t_we,
 		
 		
 		// Initiator ports out of the interconnect
-		output reg[(N_TARGETS*WB_ADDR_WIDTH)-1:0]	tadr,
-		output reg[(N_TARGETS*WB_DATA_WIDTH)-1:0]	tdat_w,
-		input[(N_TARGETS*WB_DATA_WIDTH)-1:0]		tdat_r,
-		output[N_TARGETS-1:0]						tcyc,
-		input[N_TARGETS-1:0]						terr,
-		output reg[N_TARGETS*(WB_DATA_WIDTH/8)-1:0]	tsel,
-		output[N_TARGETS-1:0]						tstb,
-		input[N_TARGETS-1:0]						tack,
-		output[N_TARGETS-1:0]						twe
+		output[(N_TARGETS*ADR_WIDTH)-1:0]	i_adr,
+		output[(N_TARGETS*DAT_WIDTH)-1:0]	i_dat_w,
+		input[(N_TARGETS*DAT_WIDTH)-1:0]		i_dat_r,
+		output[N_TARGETS-1:0]						i_cyc,
+		input[N_TARGETS-1:0]						i_err,
+		output[N_TARGETS*(DAT_WIDTH/8)-1:0]	i_sel,
+		output[N_TARGETS-1:0]						i_stb,
+		input[N_TARGETS-1:0]						i_ack,
+		output[N_TARGETS-1:0]						i_we
 		);
 	
-	localparam N_INITIATORS = 1;
-	
-	localparam WB_DATA_MSB = (WB_DATA_WIDTH-1);
-	localparam N_INIT_ID_BITS = (N_INITIATORS>1)?$clog2(N_INITIATORS):1;
-	localparam N_TARG_ID_BITS = $clog2(N_TARGETS+1);
-	localparam NO_TARGET  = {(N_TARG_ID_BITS+1){1'b1}};
-	localparam NO_INITIATOR = {(N_INIT_ID_BITS+1){1'b1}};
+	localparam NO_TARGET  = {($clog2(N_TARGETS)+1){1'b1}};
 	
 	// Each initiator has a request vector -> Which target is desired
 	//
@@ -69,142 +63,58 @@ module wb_interconnect_1xN #(
 	initial begin
 		for (ii=0; ii<N_TARGETS; ii=ii+1) begin
 			$display("%0d MASK='h%08h ADDR='h%08h", ii, 
-					T_ADR_MASK[WB_ADDR_WIDTH*ii+:WB_ADDR_WIDTH],
-					T_ADR[WB_ADDR_WIDTH*ii+:WB_ADDR_WIDTH]);
+					T_ADR_MASK[ADR_WIDTH*ii+:ADR_WIDTH],
+					T_ADR[ADR_WIDTH*ii+:ADR_WIDTH]);
 		end
 	end
 	// synopsys translate_on
 	
 	// Decode logic
-	// This vector contains an element for each initiator and target,
-	// and are one-hot encoded. 
-	//
-	// target_initiator_sel - per-target request vector. Sent to target arbiters. 
-	//                        Consists of a vector of initiators wishing to access the target
-	// initiator_target_sel - per-initator request vector. 
-	//                        Consists of a vector representing the target an initiator is accessing
-	wire[N_TARGETS-1:0]	      initiator_target_sel[N_INITIATORS-1:0];
-	wire[N_INITIATORS-1:0]    target_initiator_sel[N_TARGETS-1:0];
-//	generate
-//		genvar md_t_i;
-//		for (md_t_i=0; md_t_i<N_TARGETS; md_t_i=md_t_i+1) begin : block_md_t_i
-//			assign target_initiator_sel[N_TARGETS-md_t_i-1][md_i] = 
-//				((t_adr[WB_ADDR_WIDTH*md_i+:WB_ADDR_WIDTH]&T_ADR_MASK[WB_ADDR_WIDTH*md_t_i+:WB_ADDR_WIDTH])
-//					== T_ADR[WB_ADDR_WIDTH*md_t_i+:WB_ADDR_WIDTH]) && (t_cyc[md_i] && t_stb[md_i]);
-//			assign initiator_target_sel[md_i][md_t_i] = target_initiator_sel[md_t_i][md_i];
-//		end
-//	endgenerate
-
-	// Per-target grant vector
-	wire[N_INITIATORS-1:0]				initiator_gnt[N_TARGETS-1:0];
-
-	reg[N_INIT_ID_BITS:0]					target_active_initiator[N_TARGETS-1:0];
-	generate
-		// For each target, determine which initiator is connected
-		genvar t_ai_i;
-		integer t_ai_ii;
-		for (t_ai_i=0; t_ai_i<N_TARGETS; t_ai_i=t_ai_i+1) begin : block_t_ai
-			always @* begin
-				target_active_initiator[t_ai_i] = NO_INITIATOR;
-				for (t_ai_ii=0; t_ai_ii<N_INITIATORS; t_ai_ii=t_ai_ii+1) begin
-					if (initiator_gnt[t_ai_i][t_ai_ii]) begin
-						target_active_initiator[t_ai_i] = t_ai_ii;
-					end
-				end
-			end
-		end
-	endgenerate
+	// selected_target contains the index of the selected target
+	// (0..N_TARGETS-1) or N_TARGETS if no address matched
+	reg[$clog2(N_TARGETS):0]			selected_target;
 	
-	// Per-initiator id of the selected target
-	// Controls response-path muxing
-	reg[N_TARG_ID_BITS-1:0]				initiator_active_target[N_INITIATORS-1:0];
-	generate
-		// For each initiator, determine which target is selected and granted
-		genvar i_at_i;
-		integer i_at_ii;
-		for (i_at_i=0; i_at_i<N_INITIATORS; i_at_i=i_at_i+1) begin : block_i_at
-			always @* begin
-				initiator_active_target[i_at_i] = NO_TARGET;
-				for (i_at_ii=0; i_at_ii<N_TARGETS; i_at_ii=i_at_ii+1) begin
-					// TODO: 
-					if (initiator_target_sel[i_at_i][i_at_ii]) begin
-						initiator_active_target[i_at_i] = i_at_ii;
-					end
-				end
+	integer t_adr_i;
+	always @* begin
+		selected_target = NO_TARGET;
+		for (t_adr_i=0; t_adr_i<N_TARGETS; t_adr_i=t_adr_i+1) begin
+			if ((t_adr & T_ADR_MASK[ADR_WIDTH*t_adr_i+:ADR_WIDTH]) == T_ADR[ADR_WIDTH*t_adr_i+:ADR_WIDTH]) begin
+				selected_target = N_TARGETS-t_adr_i-1;
 			end
 		end
-	endgenerate
-			
+	end
 	
 	// WB signals from target back to initiator
-	generate
-		genvar t2i_i, t2i_j;
-		integer t2i_ii;
-			
-		
-//		for (t2i_i=0; t2i_i<N_INITIATORS; t2i_i=t2i_i+1) begin : block_t2i_i
-//			always @* begin
-//				t_dat_r[WB_DATA_WIDTH*t2i_i+:WB_DATA_WIDTH] = {WB_DATA_WIDTH{1'b0}};
-//				t_ack[t2i_i] = 1'b0;
-//				for (t2i_ii=0; t2i_ii<N_TARGETS; t2i_ii=t2i_ii+1) begin
-//					if (initiator_active_target[t2i_i] == t2i_ii) begin
-//						t_dat_r[WB_DATA_WIDTH*t2i_i+:WB_DATA_WIDTH] = 
-//							tdat_r[WB_DATA_WIDTH*t2i_ii+:WB_DATA_WIDTH];
-//						// initiator_gnt indicates which initiator the
-//						// target is currently granted to (one-hot)
-//						t_ack[t2i_i] = (initiator_gnt[t2i_ii][t2i_i] && tack[t2i_ii]);
-//					end
-//				end
-//			end
-//			assign t_err[t2i_i] = (initiator_active_target[t2i_i] != NO_TARGET)?
-//					terr[initiator_active_target[t2i_i]]:1'b0;
-//		end
-	endgenerate
-
+	
+	// synopsys translate_off
+	always @(posedge clock or posedge reset) begin
+		if (t_cyc && t_stb && t_ack && selected_target == NO_TARGET) begin
+			$display("%m Error: Address 'h%08x does not match a target", t_adr);
+		end
+	end
+	// synopsys translate_on
+	
+	// TODO: how should we handle error responses?
+	assign t_ack = (selected_target == NO_TARGET)?1'b1:i_ack[selected_target];
+	assign t_err = (selected_target == NO_TARGET)?1'b1:i_err[selected_target];
+	assign t_dat_r = i_dat_r[selected_target];
+	
 	// Initiator to target mux
 	generate
 		genvar i2t_mux_i;
-		integer i2t_mux_ii;
-//		for (i2t_mux_i=0; i2t_mux_i<N_TARGETS; i2t_mux_i=i2t_mux_i+1) begin : i2t_mux
-//			always @* begin
-//				tadr[WB_ADDR_WIDTH*i2t_mux_i+:WB_ADDR_WIDTH] = {WB_ADDR_WIDTH{1'b0}};
-//				tdat_w[WB_DATA_WIDTH*i2t_mux_i+:WB_DATA_WIDTH] = {WB_DATA_WIDTH{1'b0}};
-//				tsel[(WB_DATA_WIDTH/8)*i2t_mux_i+:(WB_DATA_WIDTH/8)] = {(WB_DATA_WIDTH/8){1'b0}};
-//				for (i2t_mux_ii=0; i2t_mux_ii<N_INITIATORS; i2t_mux_ii=i2t_mux_ii+1) begin
-//					if (target_active_initiator[i2t_mux_i] == i2t_mux_ii) begin
-//						tadr[WB_ADDR_WIDTH*i2t_mux_i+:WB_ADDR_WIDTH] = 
-//							t_adr[WB_ADDR_WIDTH*i2t_mux_ii+:WB_ADDR_WIDTH];
-//						tdat_w[WB_DATA_WIDTH*i2t_mux_i+:WB_DATA_WIDTH] = 
-//							t_dat_w[WB_DATA_WIDTH*i2t_mux_ii+:WB_DATA_WIDTH];
-//						tsel[(WB_DATA_WIDTH/8)*i2t_mux_i+:(WB_DATA_WIDTH/8)] = 
-//							t_sel[(WB_DATA_WIDTH/8)*i2t_mux_ii+:(WB_DATA_WIDTH/8)];
-//					end
-//				end
-//			end
-//			assign tcyc[i2t_mux_i] = 
-//				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?1'b0:
-//					t_cyc[target_active_initiator[i2t_mux_i]];
-//			assign tstb[i2t_mux_i] = 
-//				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?1'b0:
-//					t_stb[target_active_initiator[i2t_mux_i]];
-//			assign twe[i2t_mux_i] = 
-//				(target_active_initiator[i2t_mux_i] == NO_INITIATOR)?1'b0:
-//					t_we[target_active_initiator[i2t_mux_i]];
-//		end
+		for (i2t_mux_i=0; i2t_mux_i<N_TARGETS; i2t_mux_i=i2t_mux_i+1) begin : i2t_mux
+
+			// Route address, data, and we straight through
+			assign i_adr[ADR_WIDTH*i2t_mux_i+:ADR_WIDTH] = t_adr;
+			assign i_dat_w[DAT_WIDTH*i2t_mux_i+:DAT_WIDTH] = t_dat_w;
+			assign i_sel[(DAT_WIDTH/8)*i2t_mux_i+:(DAT_WIDTH/8)] = t_sel;
+			assign i_we[i2t_mux_i] = t_we;
+
+			// Be selective with cyc and stb
+			assign i_cyc[i2t_mux_i] = (selected_target == i2t_mux_i)?t_cyc:1'b0;
+			assign i_stb[i2t_mux_i] = (selected_target == i2t_mux_i)?t_stb:1'b0;
+		end
 	endgenerate
 	
-//	// Error target
-//	reg err_req;
-//	always @(posedge clock) begin
-//		if (reset == 1) begin
-//			err_req <= 0;
-//		end else begin
-//			if (tstb[N_TARGETS] && tcyc[N_TARGETS] && !err_req) begin
-//				err_req <= 1;
-//			end else begin
-//				err_req <= 0;
-//			end
-//		end
-//	end
 endmodule
 

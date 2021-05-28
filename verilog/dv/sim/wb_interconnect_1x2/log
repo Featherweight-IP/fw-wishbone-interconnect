@@ -1,0 +1,65 @@
+mkdir -p /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/cache/icarus
+make -C /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/cache/icarus -f /project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/mkdv.mk \
+	MKDV_RUNDIR=/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/rundir \
+	MKDV_CACHEDIR=/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/cache/icarus \
+	build-icarus || (echo "FAIL: exit status $?" > status.txt; exit 1)
+make[1]: Entering directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/cache/icarus'
+make[1]: Leaving directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/cache/icarus'
+INCFILES: /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_ncsim.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_icestorm.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_vcs.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_icarus.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_cocotb.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_vlsim.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_openlane.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_questa.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_quartus.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_sby.mk /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/mkdv/src/mkdv/share/mkfiles/mkdv_pybfms.mk sby questa icestorm vlsim quartus openlane icarus questa icestorm quartus openlane cocotb pybfms
+make[1]: Entering directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/rundir'
+     -.--ns INFO     cocotb.gpi                         ..mbed/gpi_embed.cpp:77   in set_program_name_in_venv        Did not detect Python virtual environment. Using system-wide Python interpreter
+     -.--ns INFO     cocotb.gpi                         ../gpi/GpiCommon.cpp:105  in gpi_print_registered_impl       VPI registered
+     -.--ns INFO     cocotb.gpi                         ..mbed/gpi_embed.cpp:240  in _embed_sim_init                 Python interpreter initialized and cocotb loaded!
+     0.00ns INFO     Running on Icarus Verilog version 11.0 (stable)
+     0.00ns INFO     Running tests with cocotb v1.5.2 from /project/fun/featherweight-ip/fw-wishbone-interconnect/packages/python/lib64/python3.6/site-packages/cocotb
+     0.00ns INFO     Seeding Python random module with 1622215517
+     0.00ns WARNING  Pytest not found, assertion rewriting will not occur
+     0.00ns INFO     Found test wb_interconnect_tests.single_inflight_xfer_all_targets.entry
+     0.00ns INFO     Running test 1/1: entry
+     0.00ns INFO     Starting test: "entry"
+                     Description: None
+/project/fun/featherweight-ip/fw-wishbone-interconnect/packages/pybfms/src/pybfms/backend.py:50: RuntimeWarning: Timer setup with value 0, which might exhibit undefined behavior in some simulators
+  return Timer(time_ps, units)
+BFM: wb_interconnect_1x2_tb.initiator[0].u_initiator_bfm : wishbone_bfms.wb_initiator_bfm.WbInitiatorBfm
+BFM: wb_interconnect_1x2_tb.target[0].u_target_bfm : wishbone_bfms.wb_target_bfm.WbTargetBfm
+BFM: wb_interconnect_1x2_tb.target[1].u_target_bfm : wishbone_bfms.wb_target_bfm.WbTargetBfm
+Initiator: wb_interconnect_1x2_tb.initiator[0].u_initiator_bfm
+  index: 0
+Target: wb_interconnect_1x2_tb.target[0].u_target_bfm
+  index: 0
+Target: wb_interconnect_1x2_tb.target[1].u_target_bfm
+  index: 1
+i=0 t=wb_interconnect_1x2_tb.target[0].u_target_bfm
+i=1 t=wb_interconnect_1x2_tb.target[1].u_target_bfm
+initiator_bfms: [<wishbone_bfms.wb_initiator_bfm.WbInitiatorBfm object at 0x7f53135a6a90>]
+target_bfms: [<wishbone_bfms.wb_target_bfm.WbTargetBfm object at 0x7f5312de6588>, <wishbone_bfms.wb_target_bfm.WbTargetBfm object at 0x7f5312de66a0>]
+target_id=0 target_idx=0
+set_exp_data: 0 0x00000000 (wb_interconnect_1x2_tb.target[0].u_target_bfm)
+--> _reset
+<-- _reset
+--> _reset
+<-- _reset
+TargetMgr[0]::access initiator_id=0 sz=1 0x00000000 1 f 0x00000000 (wb_interconnect_1x2_tb.target[0].u_target_bfm)
+target_id=1 target_idx=1
+set_exp_data: 0 0x00000001 (wb_interconnect_1x2_tb.target[1].u_target_bfm)
+TargetMgr[1]::access initiator_id=0 sz=1 0x10000000 1 f 0x00000001 (wb_interconnect_1x2_tb.target[1].u_target_bfm)
+   891.00ns INFO     Test Passed: entry
+   891.00ns INFO     Passed 1 tests (0 skipped)
+   891.00ns INFO     **********************************************************************************************************************
+                     ** TEST                                                          PASS/FAIL  SIM TIME(NS)  REAL TIME(S)  RATIO(NS/S) **
+                     **********************************************************************************************************************
+                     ** wb_interconnect_tests.single_inflight_xfer_all_targets.entry    PASS          891.00          0.00    288848.73  **
+                     **********************************************************************************************************************
+                     
+   891.00ns INFO     *************************************************************************************
+                     **                                 ERRORS : 0                                      **
+                     *************************************************************************************
+                     **                               SIM TIME : 891.00 NS                              **
+                     **                              REAL TIME : 0.01 S                                 **
+                     **                        SIM / REAL TIME : 68080.17 NS/S                          **
+                     *************************************************************************************
+                     
+   891.00ns INFO     Shutting down...
+make[1]: Leaving directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/rundir'
+make[1]: Entering directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/rundir'
+make[1]: Leaving directory '/project/fun/featherweight-ip/fw-wishbone-interconnect/verilog/dv/sim/wb_interconnect_1x2/rundir'
