@@ -5,3 +5,6 @@ wb_interconnect_tag_NxN.v
 wb_interconnect_tag_NxN_dbg.v
 
 wb_interconnect_1xN.v
+wb_interconnect_1xN_pt.v
+wb_interconnect_tag_1xN.v
+wb_interconnect_tag_1xN_pt.v
