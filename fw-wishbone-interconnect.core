@@ -1,4 +1,8 @@
 CAPI=2:
+#****************************************************************************
+#* fw-wishbone-interconnect.core
+#*
+#****************************************************************************
 
 name: featherweight-ip::fw-wishbone-interconnect:0.0.1
 description: Collection of Wishbone interconnect fabrics
@@ -24,3 +28,4 @@ targets:
   hdl:
     filesets:
       - rtl
+      
