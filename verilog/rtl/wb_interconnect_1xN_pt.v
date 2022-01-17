@@ -72,15 +72,6 @@ module wb_interconnect_1xN_pt #(
 	
 	// WB signals from target back to initiator
 	
-	// synopsys translate_off
-	always @(posedge clock or posedge reset) begin
-		if (t_cyc && t_stb && t_ack && selected_target == NO_TARGET) begin
-			$display("%m Error: Address 'h%08x does not match a target", t_adr);
-		end
-	end
-	// synopsys translate_on
-	
-	// TODO: how should we handle error responses?
 	assign t_ack = (selected_target == NO_TARGET)?pt_ack:i_ack[selected_target];
 	assign t_err = (selected_target == NO_TARGET)?pt_err:i_err[selected_target];
 	assign t_dat_r = (selected_target == NO_TARGET)?pt_dat_r:i_dat_r[selected_target];
