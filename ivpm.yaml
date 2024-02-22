@@ -22,3 +22,8 @@ package:
         - name: pybfms-wishbone
           url: https://github.com/pybfms/pybfms-wishbone.git
 
+    paths: 
+      export:
+        lib-dirs:
+        - verilog/rtl
+

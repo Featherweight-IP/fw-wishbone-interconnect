@@ -10,14 +10,14 @@ description: Collection of Wishbone interconnect fabrics
 filesets:
   rtl:
     files:
-      - verilog/rtl/wb_interconnect_1xN_pt.v
-      - verilog/rtl/wb_interconnect_1xN.v
-      - verilog/rtl/wb_interconnect_arb.v
-      - verilog/rtl/wb_interconnect_NxN.v
-      - verilog/rtl/wb_interconnect_tag_1xN_pt.v
-      - verilog/rtl/wb_interconnect_tag_1xN.v
-      - verilog/rtl/wb_interconnect_tag_NxN_dbg.v
-      - verilog/rtl/wb_interconnect_tag_NxN.v
+      - wb_interconnect_1xN_pt.v
+      - wb_interconnect_1xN.v
+      - wb_interconnect_arb.v
+      - wb_interconnect_NxN.v
+      - wb_interconnect_tag_1xN_pt.v
+      - wb_interconnect_tag_1xN.v
+      - wb_interconnect_tag_NxN_dbg.v
+      - wb_interconnect_tag_NxN.v
     file_type: verilogSource
       
 targets:
