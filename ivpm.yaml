@@ -1,29 +1,44 @@
 package:
     name: fw-wishbone-interconnect
-    version: None
-    deps:
-        - name: fwprotocol-defs
-          url: https://github.com/featherweight-ip/fwprotocol-defs.git
-    dev-deps:
-        - name: fwprotocol-defs
-          url: https://github.com/featherweight-ip/fwprotocol-defs.git
-        - name: fw-wishbone-sram-ctrl
-          url: https://github.com/featherweight-ip/fw-wishbone-sram-ctrl.git
-        - name: cocotb
-          src: pypi
-        - name: vlsim
-          src: pypi
-        - name: assertpy
-          src: pypi
-        - name: mkdv
-          url: https://github.com/fvutils/mkdv.git
-        - name: pybfms
-          src: pypi
-        - name: pybfms-wishbone
-          url: https://github.com/pybfms/pybfms-wishbone.git
 
-    paths: 
+    dep-sets:
+    - name: default
+      deps:
+      - name: fwprotocol-defs
+        url: https://github.com/featherweight-ip/fwprotocol-defs.git
+        type: raw
+
+    - name: default-dev
+      deps:
+      - name: fwprotocol-defs
+        url: https://github.com/featherweight-ip/fwprotocol-defs.git
+        type: raw
+      - name: fw-wishbone-sram-ctrl
+        url: https://github.com/featherweight-ip/fw-wishbone-sram-ctrl.git
+        type: raw
+      - name: cocotb
+        type: python
+        src: pypi
+      - name: vlsim
+        type: python
+        src: pypi
+      - name: assertpy
+        type: python
+        src: pypi
+      - name: mkdv
+        url: https://github.com/fvutils/mkdv.git
+        type: python
+      - name: pybfms
+        type: python
+        src: pypi
+      - name: pybfms-wishbone
+        url: https://github.com/pybfms/pybfms-wishbone.git
+        type: python
+
+    paths:
       export:
         lib-dirs:
-        - verilog/rtl
-
+          - verilog/rtl
+      project:
+        lib-dirs:
+          - verilog/rtl
